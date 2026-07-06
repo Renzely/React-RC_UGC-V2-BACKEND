@@ -418,11 +418,13 @@ app.post("/attendance/batch-status", async (req, res) => {
         timeOutTimestamp: bestLog.timeOut || null,
         addressTimeIn: bestLog.timeInLocation || null,
         addressTimeOut: bestLog.timeOutLocation || null,
-        timeInCoordinates: bestLog.timeInCoordinates || null, // ✅ needed for map
-        timeOutCoordinates: bestLog.timeOutCoordinates || null, // ✅ needed for map
+        timeInCoordinates: bestLog.timeInCoordinates || null,
+        timeOutCoordinates: bestLog.timeOutCoordinates || null,
+        timeInSelfieUrl: bestLog.timeInSelfieUrl || null,
+        timeOutSelfieUrl: bestLog.timeOutSelfieUrl || null,
         outlet: bestOutlet,
         shiftCount: totalShiftCount,
-        completedShifts, // ✅ e.g. 2 means 2 full time-in + time-out pairs
+        completedShifts,
       };
     });
     return res.json({ data: results });
@@ -477,9 +479,8 @@ app.post("/get-attendance", async (req, res) => {
     const userRole = user?.role ?? "N/A";
 
     const dateRange = {};
-    if (startRaw)
-      dateRange.$gte = new Date(startRaw).toISOString().split("T")[0];
-    if (endRaw) dateRange.$lte = new Date(endRaw).toISOString().split("T")[0];
+    if (startRaw) dateRange.$gte = startRaw;
+    if (endRaw) dateRange.$lte = endRaw;
 
     const query = { email };
     if (Object.keys(dateRange).length) query.date = dateRange;
